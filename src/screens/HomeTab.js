@@ -26,7 +26,7 @@ const HomeTab = () => {
       <BottomTab.Screen
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            <Icon name="file-text" color={color} size={size} />
+            <Icon name="arrow-up" color={color} size={size} />
           ),
           header: ({ navigation }) => (
             <View style={styles.header}>

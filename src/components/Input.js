@@ -20,7 +20,7 @@ const Input = ({
       <View style={styleLocal.iconWrapper}>
         <Icon name={icon} size={20} color={PRIMARY_COLOR} />
       </View>
-      <View style={styleLocal.inputWrapper}>
+      <View style={styles.flexSatu}>
         <TextInput
           style={[styles.colorPrimary, styles.fs16px]}
           placeholder={placeholder}
@@ -56,9 +56,6 @@ const styleLocal = StyleSheet.create({
     width: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  inputWrapper: {
-    flex: 1,
   },
 });
 

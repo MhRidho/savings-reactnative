@@ -4,6 +4,9 @@ import { SECONDARY_COLOR } from './constant';
 import { TERNIARY_COLOR } from './constant';
 
 const styles = StyleSheet.create({
+  flexSatu: {
+    flex: 1,
+  },
   wrapper: {
     height: Dimensions.get('screen').height - 70,
   },

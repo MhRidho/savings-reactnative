@@ -17,6 +17,7 @@
     "@react-navigation/native-stack": "^6.8.0",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^0.27.2",
+    "formik": "^2.2.9",
     "native-base": "^3.4.13",
     "qs": "^6.11.0",
     "react": "18.0.0",
@@ -31,7 +32,8 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
-    "thunk": "^0.0.1"
+    "thunk": "^0.0.1",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

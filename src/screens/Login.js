@@ -6,31 +6,32 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  TextInput,
 } from 'react-native';
-import React, { useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import styles from '../styles/global';
 import Input from '../components/Input';
 import { Flex } from 'native-base';
 import { login } from '../redux/asyncActions/auth';
 import { useDispatch, useSelector } from 'react-redux';
+import { PRIMARY_COLOR } from '../styles/constant';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Login = ({ navigation }) => {
-  // const dispatch = useDispatch();
-  // const token = useSelector(state => state.auth.token);
-
-  // const onLogin = value => {
-  //   const data = { email: value.email, password: value.password };
-  //   dispatch(login(data));
-  // };
-  // useEffect(() => {
-  //   if (token) {
-  //     navigation.navigate('Home');
-  //   }
-  // }, [navigation.navigate, token]);
-
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
+  const dispatch = useDispatch();
+
+  const data = {
+    email,
+    password,
+  };
+
+  const onLogin = () => {
+    dispatch(login(data));
+  };
+
   const onLoginn = () => {
     if (email === 'ridho@gmail.com' && password === 'ridho123') {
       Alert.alert('Success', 'Login Success', [
@@ -62,6 +63,7 @@ const Login = ({ navigation }) => {
             Login to your existing account to access all the features in Savings
           </Text>
         </View>
+
         <View style={styleLocal.inputWrapper}>
           <Input
             onChange={text => setEmail(text)}
