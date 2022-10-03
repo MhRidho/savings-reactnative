@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Button,
 } from 'react-native';
 import React from 'react';
 import styles from '../styles/global';
@@ -14,13 +13,13 @@ import { Flex } from 'native-base';
 import { login } from '../redux/asyncActions/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRIMARY_COLOR } from '../styles/constant';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Yup from 'yup';
 import { ErrorMessage, Formik } from 'formik';
 import { useEffect } from 'react';
+import ButtonSavings from '../components/ButtonSavings';
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Required'),
+  email: Yup.string().required('Required'),
   password: Yup.string().required('Required'),
 });
 
@@ -29,34 +28,34 @@ const FormLogin = ({ errors, handleChange, handleSubmit, navigation }) => {
     <>
       <View style={styleLocal.inputWrapper}>
         <Input
-          onChangeText={handleChange('email')}
+          name="email"
+          type="email-address"
+          onChangeText={handleChange}
           placeholder="Enter your e-mail"
           icon="envelope"
-          type="email-address"
           style={styles.fs16px}
-          name="email"
         />
-        {/* {errors.email ? (
+        {errors.email ? (
           <Text>
             <ErrorMessage name="email" />
           </Text>
-        ) : null} */}
+        ) : null}
       </View>
       <View style={styleLocal.inputWrapper}>
         <Input
-          style={styles.fs16px}
-          onChangeText={handleChange('password')}
+          name="password"
+          type="password"
+          onChangeText={handleChange}
           placeholder="Enter your password"
           icon="lock"
           secure={true}
-          name="password"
-          type="password"
+          style={styles.fs16px}
         />
-        {/* {errors.password ? (
+        {errors.password ? (
           <Text>
             <ErrorMessage name="password" />
           </Text>
-        ) : null} */}
+        ) : null}
       </View>
       <View>
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
@@ -64,11 +63,8 @@ const FormLogin = ({ errors, handleChange, handleSubmit, navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.buttonWrapper}>
-        <TouchableOpacity onPress={handleSubmit} title="Submit">
-          <View style={[styles.button, styles.text]}>
-            <Text style={styles.buttonText}>Login</Text>
-          </View>
-        </TouchableOpacity>
+        <ButtonSavings action={handleSubmit} title="submit" text="Login" />
+
         <View style={[styles.textBlack, styles.flexRow]}>
           <Text style={styles.colorPrimary}>Don't have an account? Let's </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
@@ -90,7 +86,6 @@ const Login = ({ navigation }) => {
     const email = value.email;
     const password = value.password;
     const data = { email, password };
-    console.log(data);
     dispatch(login(data));
   };
 

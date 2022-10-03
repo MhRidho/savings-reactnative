@@ -3,17 +3,16 @@ import qs from 'qs';
 import http from '../../helpers/http';
 
 export const login = createAsyncThunk('/auth/login', async request => {
-  console.log('login test');
   const result = {};
   try {
-    console.log('login test 2');
     const send = qs.stringify(request);
     const { data } = await http().post('/auth/login', send);
     // eslint-disable-next-line no-const-assign
     result.token = data.results.token;
+    result.message = data.message;
     return result;
   } catch (e) {
-    result.errorMsg = e.response.data.message;
+    result.errorMsg = e.response.data?.message;
     return result;
   }
 });

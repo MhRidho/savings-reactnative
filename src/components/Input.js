@@ -10,9 +10,10 @@ const Input = ({
   icon,
   type,
   secure,
-  onChange,
+  onChangeText,
   value,
   defaultValue,
+  name,
 }) => {
   const [showText, setShow] = React.useState(false);
   return (
@@ -26,7 +27,7 @@ const Input = ({
           placeholder={placeholder}
           keyboardType={type}
           secureTextEntry={!showText}
-          onChangeText={onChange}
+          onChangeText={onChangeText(name)}
           value={value}
           defaultValue={defaultValue}
         />

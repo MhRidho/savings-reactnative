@@ -14,8 +14,7 @@ const auth = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: state => {
-      // AsyncStorage.removeItem('token');
+    logout: () => {
       return initialState;
     },
     getEmail: (state, action) => {
@@ -28,15 +27,11 @@ const auth = createSlice({
       state.successMsg = null;
     });
     build.addCase(login.fulfilled, (state, action) => {
-      const token = action.payload?.data?.token;
-      const id = action.payload?.data?.id;
-      state.errorMsg = action.payload?.error;
+      const token = action.payload?.token;
+      const id = action.payload?.id;
       if (token) {
         state.token = token;
         state.id = id;
-      } else {
-        state.errorMsg = action.payload?.errorMsg;
-        state.successMsg = action.payload?.successMsg;
       }
     });
     build.addCase(register.pending, state => {
