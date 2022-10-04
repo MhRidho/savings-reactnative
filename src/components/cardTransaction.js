@@ -9,7 +9,7 @@ import { SECONDARY_COLOR } from '../styles/constant';
 import { PRIMARY_COLOR } from '../styles/constant';
 import { Box, Button, Flex, Center, VStack, FlatList } from 'native-base';
 
-const CardTransaction = () => {
+const CardTransaction = ({ item }) => {
   return (
     <>
       <View>
@@ -28,12 +28,12 @@ const CardTransaction = () => {
                 <Text style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
                   Samuel Suhi
                 </Text>
-                <Text style={[styles.textWhite]}>Transfer</Text>
+                <Text style={[styles.textWhite]}>{item.notes}</Text>
               </View>
             </View>
             <View style={[styles.padHor10, styles.jCenter]}>
               <Text style={[styles.fwBold, styles.fs18px, styles.textWhite]}>
-                +Rp50.000
+                +RP{item.amount}
               </Text>
             </View>
           </Flex>

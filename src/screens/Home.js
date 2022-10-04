@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,11 +17,25 @@ import { PRIMARY_COLOR } from '../styles/constant';
 import { SECONDARY_COLOR } from '../styles/constant';
 import { Box, Button, Flex, Center, VStack } from 'native-base';
 import CardTransaction from '../components/cardTransaction';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getProfileLogin } from '../redux/asyncActions/profile';
+import { getHistory } from '../redux/asyncActions/transaction';
+import { useEffect } from 'react';
 
 const Home = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
   const profile = useSelector(state => state.profile.data);
+  const history = useSelector(state => state.transaction.value);
+
+  useEffect(() => {
+    dispatch(getProfileLogin(token));
+    dispatch(getHistory(token));
+  }, []);
+
   console.log(profile);
+  console.log(history);
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>
@@ -28,18 +43,23 @@ const Home = ({ navigation }) => {
           <View>
             <Image style={styleLocal.imageStyle} source={Profile} />
           </View>
-          <View style={styleLocal.balanceView}>
-            <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
-            <Text style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
-              Rp120.000
-            </Text>
-          </View>
-          <View styles={styleLocal.iconView}>
-            <Icon name="bell-o" size={28} style={[styles.textWhite]} />
-          </View>
+          <Flex direction="row" justifyContent="space-between">
+            <View style={styleLocal.balanceView}>
+              <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
+              <Text style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
+                Rp {profile.balance}
+              </Text>
+              <Text style={[styles.fs14px, styles.textWhite]}>
+                {profile.phonenumber}
+              </Text>
+            </View>
+            <View styles={styleLocal.iconView}>
+              <Icon name="bell-o" size={28} style={[styles.textWhite]} />
+            </View>
+          </Flex>
         </View>
       </View>
-      <ScrollView style={styles.content}>
+      <View style={styleLocal.content}>
         <Center>
           <Flex space="2.5" direction="row" mb="2.5" mt="1.5">
             <Box alignItems="center">
@@ -47,7 +67,14 @@ const Home = ({ navigation }) => {
                 <Button
                   style={styleLocal.bgPrimary}
                   size="lg"
-                  onPress={() => console.log('Transfer')}>
+                  action={() => navigation.navigate('SearchReceiver')}>
+                  <Flex direction="row" justifyContent="center">
+                    <Icon
+                      name={'arrow-up'}
+                      size={17}
+                      style={styles.textWhite}
+                    />
+                  </Flex>
                   Transfer
                 </Button>
               </VStack>
@@ -58,6 +85,13 @@ const Home = ({ navigation }) => {
                   style={styleLocal.bgPrimary}
                   size="lg"
                   onPress={() => console.log('Top Up')}>
+                  <Flex direction="row" justifyContent="center">
+                    <Icon
+                      name={'arrow-up'}
+                      size={17}
+                      style={styles.textWhite}
+                    />
+                  </Flex>
                   Top Up
                 </Button>
               </VStack>
@@ -79,11 +113,15 @@ const Home = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </Flex>
-        <CardTransaction />
-        <CardTransaction />
-        <CardTransaction />
-        <CardTransaction />
-      </ScrollView>
+        <FlatList
+          data={history.results}
+          renderItem={({ item }) => (
+            <TouchableOpacity>
+              <CardTransaction item={item} />
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -145,6 +183,10 @@ const styleLocal = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 10,
   },
 });
 
