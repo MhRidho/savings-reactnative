@@ -86,7 +86,7 @@ const CreatePin = ({ navigation }) => {
   const successMsg = useSelector(state => state.auth.successMsg);
 
   const onPin = () => {
-    const data = { email, enteredPin: enteredPin };
+    const data = { email, pin: enteredPin };
     dispatch(createPin(data));
   };
 
