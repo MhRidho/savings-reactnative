@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
   Image,
   Dimensions,
 } from 'react-native';
@@ -12,15 +11,16 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from '../styles/global';
-import Input from '../components/Input';
 import Profile from '../assets/profile.png';
-import Profile1 from '../assets/profile1.png';
 import { PRIMARY_COLOR } from '../styles/constant';
 import { SECONDARY_COLOR } from '../styles/constant';
 import { Box, Button, Flex, Center, VStack } from 'native-base';
 import CardTransaction from '../components/cardTransaction';
+import { useSelector } from 'react-redux';
 
 const Home = ({ navigation }) => {
+  const profile = useSelector(state => state.profile.data);
+  console.log(profile);
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>

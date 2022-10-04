@@ -4,23 +4,105 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from 'react-native';
 import React from 'react';
 
 import styles from '../styles/global';
 import Input from '../components/Input';
+import ButtonSavings from '../components/ButtonSavings';
+import { ErrorMessage, Formik } from 'formik';
+import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../redux/asyncActions/auth';
+import { getEmail, unsetMsg } from '../redux/reducers/auth';
+import { useEffect } from 'react';
+
+const registerSchema = Yup.object().shape({
+  username: Yup.string().required('Required'),
+  email: Yup.string().required('Required'),
+  password: Yup.string().required('Required'),
+});
+
+const FormRegister = ({ errors, handleChange, handleSubmit, navigation }) => {
+  return (
+    <>
+      <View style={styleLocal.inputWrapper}>
+        <Input
+          name="username"
+          type="email-address"
+          onChangeText={handleChange}
+          placeholder="Enter username"
+          icon="user"
+          style={styles.fs16px}
+        />
+        {errors.username ? (
+          <Text>
+            <ErrorMessage name="username" />
+          </Text>
+        ) : null}
+      </View>
+
+      <View style={styleLocal.inputWrapper}>
+        <Input
+          name="email"
+          type="email-address"
+          onChangeText={handleChange}
+          placeholder="Enter your e-mail"
+          icon="envelope"
+          style={styles.fs16px}
+        />
+        {errors.email ? (
+          <Text>
+            <ErrorMessage name="email" />
+          </Text>
+        ) : null}
+      </View>
+
+      <View style={styleLocal.inputWrapper}>
+        <Input
+          name="password"
+          type="password"
+          onChangeText={handleChange}
+          placeholder="Enter your password"
+          icon="lock"
+          style={styles.fs16px}
+          secure={true}
+        />
+        {errors.password ? (
+          <Text>
+            <ErrorMessage name="password" />
+          </Text>
+        ) : null}
+      </View>
+      <View style={styles.buttonWrapper}>
+        <ButtonSavings action={handleSubmit} title="submit" text="Sign Up" />
+      </View>
+    </>
+  );
+};
 
 const Signup = ({ navigation }) => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const onLogin = () => {
-    if (email === 'ridho@gmail.com' && password === 'ridho123') {
-      Alert.alert('Success', 'Login Success');
-    } else {
-      Alert.alert('Failed', 'Username or password not match');
-    }
+  const dispatch = useDispatch();
+
+  const successMsg = useSelector(state => state.auth.successMsg);
+  const errorMsg = useSelector(state => state.auth.errorMsg);
+
+  const onRegis = value => {
+    const username = value.username;
+    const email = value.email;
+    const password = value.password;
+    const data = { username, email, password };
+
+    dispatch(register(data));
+    dispatch(getEmail(email));
   };
+
+  useEffect(() => {
+    if (successMsg) {
+      dispatch(unsetMsg());
+      navigation.navigate('CreatePin');
+    }
+  }, [navigation, successMsg]);
   return (
     <View style={styles.wrapper}>
       <View style={styles.header} />
@@ -33,36 +115,14 @@ const Signup = ({ navigation }) => {
             Create your account to access Zwallet.
           </Text>
         </View>
-        <View style={styleLocal.inputWrapper}>
-          <Input
-            onChange={text => setEmail(text)}
-            placeholder="Enter your username"
-            icon="user"
-            type="email-address"
-          />
-        </View>
-        <View style={styleLocal.inputWrapper}>
-          <Input
-            onChange={text => setEmail(text)}
-            placeholder="Enter your e-mail"
-            icon="envelope"
-            type="email-address"
-          />
-        </View>
-        <View style={styleLocal.inputWrapper}>
-          <Input
-            onChange={text => setPassword(text)}
-            placeholder="Create your password"
-            icon="lock"
-            secure={true}
-          />
-        </View>
+
+        <Formik
+          validationSchema={registerSchema}
+          initialValues={{ username: '', email: '', password: '' }}
+          onSubmit={onRegis}>
+          {props => <FormRegister {...props} navigation={navigation} />}
+        </Formik>
         <View style={styles.buttonWrapper}>
-          <TouchableOpacity onPress={() => navigation.navigate('CreatePin')}>
-            <View style={[styles.button, styles.text]}>
-              <Text style={[styles.buttonText]}>Sign Up</Text>
-            </View>
-          </TouchableOpacity>
           <View style={[styles.textBlack, styles.flexRow]}>
             <Text style={styles.colorPrimary}>
               Don't have an account? Let's{' '}

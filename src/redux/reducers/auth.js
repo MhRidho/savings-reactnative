@@ -20,6 +20,10 @@ const auth = createSlice({
     getEmail: (state, action) => {
       state.email = action.payload;
     },
+    unsetMsg: state => {
+      state.errorMsg = null;
+      state.successMsg = null;
+    },
   },
   extraReducers: build => {
     build.addCase(login.pending, state => {
@@ -47,11 +51,12 @@ const auth = createSlice({
       state.successMsg = null;
     });
     build.addCase(createPin.fulfilled, (state, action) => {
+      state.errorMsg = action.payload?.error;
       state.successMsg = action.payload?.message;
     });
   },
 });
 
-export { login };
-export const { logout, getEmail } = auth.actions;
+export { login, register, createPin };
+export const { logout, getEmail, unsetMsg } = auth.actions;
 export default auth.reducer;
