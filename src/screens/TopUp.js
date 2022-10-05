@@ -12,16 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/global';
 import { PRIMARY_COLOR } from '../styles/constant';
 import { SECONDARY_COLOR } from '../styles/constant';
-import {
-  Box,
-  Button,
-  Flex,
-  Center,
-  Modal,
-  FormControl,
-  Input,
-  Form,
-} from 'native-base';
+import { Box, Button, Flex, Modal, FormControl, Input } from 'native-base';
 import CardTopUp from '../components/CardTopUp';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProfileLogin } from '../redux/asyncActions/profile';

@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   Image,
   Dimensions,
   FlatList,
@@ -33,6 +32,9 @@ const Home = ({ navigation }) => {
     dispatch(getHistory(token));
   }, []);
 
+  console.log('log homeeeeeeeeeeeeeeeeeeeeeeeeeeee', profile.balance);
+  console.log('log homeeeeeeeeeeeeeeeeeeeeeeeeeeee', profile.phonenumber);
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>
@@ -44,10 +46,10 @@ const Home = ({ navigation }) => {
             <View style={styleLocal.balanceView}>
               <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
               <Text style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
-                Rp {profile.balance}
+                Rp {profile.balance || 'No Balance'}
               </Text>
               <Text style={[styles.fs14px, styles.textWhite]}>
-                {profile.phonenumber}
+                {profile.phonenumber || '081200000001'}
               </Text>
             </View>
             <View styles={styleLocal.iconView}>

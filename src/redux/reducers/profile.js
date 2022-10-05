@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getProfileLogin, getAllProfiles } from '../asyncActions/profile';
+import { getProfileLogin, getAllProfiles, updateProfile } from '../asyncActions/profile';
 
 const initialState = {
   value: {},
@@ -35,9 +35,17 @@ export const profile = createSlice({
     build.addCase(getAllProfiles.fulfilled, (state, action) => {
       state.value = { ...action.payload };
     });
+    build.addCase(updateProfile.pending, state => {
+      state.data = null;
+      state.successMsg = null;
+    });
+    build.addCase(updateProfile.fulfilled, (state, action) => {
+      state.data = action.payload.results;
+      state.successMsg = action.payload?.successMsg;
+    });
   },
 });
 
 export default profile.reducer;
-export { getProfileLogin, getAllProfiles };
+export { getProfileLogin, getAllProfiles, updateProfile };
 export const { resetMsg } = profile.actions;

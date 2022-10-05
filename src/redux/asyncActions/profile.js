@@ -33,3 +33,19 @@ export const getAllProfiles = createAsyncThunk(
     }
   },
 );
+
+export const updateProfile = createAsyncThunk(
+  'profile/updateProfile',
+  async ({ token, request }) => {
+    const result = {};
+    try {
+      const send = qs.stringify(request);
+      const { data } = await http(token).patch('/auth/profile', send);
+      result.successMsg = data.message;
+      return result;
+    } catch (e) {
+      result.message = e.response.data?.message;
+      return result;
+    }
+  },
+);
