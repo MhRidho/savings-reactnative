@@ -1,11 +1,31 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import styles from '../styles/global';
 import { Flex, Input, ScrollView, VStack } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CardTransaction from '../components/cardTransaction';
+import CardTransfer from '../components/CardTransfer';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllProfiles } from '../redux/asyncActions/profile';
+import { useEffect } from 'react';
+import { getName, getPhone, getUserIdTransfer } from '../redux/reducers/transaction';
 
 const SearchReceiver = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const allprofile = useSelector(state => state.profile.value);
+  const totalData = allprofile.pageInfo?.totalData;
+
+  const NextData = item => {
+    dispatch(getName(item.fullname));
+    dispatch(getPhone(item.phonenumber));
+    dispatch(getUserIdTransfer(item.user_id));
+    navigation.navigate('InputAmount');
+  };
+
+  useEffect(() => {
+    dispatch(getAllProfiles(token));
+  }, []);
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>
@@ -18,13 +38,10 @@ const SearchReceiver = ({ navigation }) => {
             py="3"
             px="1"
             fontSize="18"
-          // InputLeftElement={
-          //   <Icon m="2" ml="3" size="6" color="gray.400" name="search" />
-          // }
           />
         </VStack>
       </View>
-      <ScrollView>
+      <View>
         <View style={[styles.padHor10]}>
           <Flex direction="row" justifyContent={'space-between'}>
             <View>
@@ -39,39 +56,23 @@ const SearchReceiver = ({ navigation }) => {
                 Contacts
               </Text>
               <Text style={[styles.textBlack, styles.fs14px]}>
-                17 Contact Founds
+                {totalData} Contact Founds
               </Text>
             </View>
           </Flex>
         </View>
         <View style={[styles.padHor10, styles.marTop30]}>
-          <TouchableOpacity onPress={() => navigation.navigate('InputAmount')}>
-            <CardTransaction />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('InputAmount')}>
-            <CardTransaction />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('InputAmount')}>
-            <CardTransaction />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('InputAmount')}>
-            <CardTransaction />
-          </TouchableOpacity>
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
-          <CardTransaction />
+          <TouchableOpacity />
+          <FlatList
+            data={allprofile.results}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => NextData(item)}>
+                <CardTransfer item={item} />
+              </TouchableOpacity>
+            )}
+          />
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };

@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Feather';
@@ -20,8 +21,18 @@ import { PRIMARY_COLOR } from '../styles/constant';
 import { SECONDARY_COLOR } from '../styles/constant';
 import { Box, Button, Flex, Center, VStack } from 'native-base';
 import CardTransaction from '../components/cardTransaction';
+import { useSelector, useDispatch } from 'react-redux';
+import { getHistory } from '../redux/asyncActions/transaction';
+import { useEffect } from 'react';
 
 const Details = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const history = useSelector(state => state.transaction.value);
+
+  useEffect(() => {
+    dispatch(getHistory(token));
+  }, []);
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>
@@ -48,7 +59,7 @@ const Details = ({ navigation }) => {
           </Flex>
         </View>
       </View>
-      <ScrollView style={styles.content}>
+      <View style={styleLocal.content}>
         <View style={styleLocal.padVer}>
           <View>
             <Text style={[styles.textBlack, styles.fwBold, styles.fs18px]}>
@@ -76,11 +87,15 @@ const Details = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </Flex>
-        <CardTransaction />
-        <CardTransaction />
-        <CardTransaction />
-        <CardTransaction />
-      </ScrollView>
+        <FlatList
+          data={history.results}
+          renderItem={({ item }) => (
+            <TouchableOpacity>
+              <CardTransaction item={item} />
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -145,6 +160,10 @@ const styleLocal = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 10,
   },
 });
 

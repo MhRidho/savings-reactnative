@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPin } from '../redux/asyncActions/auth';
 import { unsetMsg } from '../redux/reducers/auth';
 
-const FormPin = ({ handleSubmit, setEnteredPin }) => {
+export const FormPin = ({ handleSubmit, setEnteredPin }) => {
   const [showRemoveButton, setShowRemoveButton] = useState(false);
   const [showCompletedButton, setShowCompletedButton] = useState(false);
   const pinView = useRef(null);

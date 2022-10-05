@@ -33,9 +33,6 @@ const Home = ({ navigation }) => {
     dispatch(getHistory(token));
   }, []);
 
-  console.log(profile);
-  console.log(history);
-
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>

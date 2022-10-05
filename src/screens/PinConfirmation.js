@@ -1,37 +1,49 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactNativePinView from 'react-native-pin-view';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'native-base';
 
 import styles from '../styles/global';
 import { PRIMARY_COLOR } from '../styles/constant';
-import PinSuccess from './PinSuccess';
+import { transfer } from '../redux/asyncActions/transaction';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetMsg } from '../redux/reducers/transaction';
+import { Formik } from 'formik';
+import { FormPin } from './CreatePin';
 
 const PinConfirmation = ({ navigation }) => {
-  const pinView = useRef(null);
-  const [showRemoveButton, setShowRemoveButton] = useState(false);
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const successMsg = useSelector(state => state.transaction.successMsg);
+  const errorMsg = useSelector(state => state.transaction.errorMsg);
+  const fullname = useSelector(state => state.transaction.fullname);
+  const phone = useSelector(state => state.transaction.phone);
+  const amount = useSelector(state => state.transaction.amount);
+  const notes = useSelector(state => state.transaction.notes);
+  const time = new Date().toISOString();
+  const recipient_id = useSelector(state => state.transaction.user_id);
+  const typeId = useSelector(state => state.transaction.type_id);
+
   const [enteredPin, setEnteredPin] = useState('');
-  const [showCompletedButton, setShowCompletedButton] = useState(false);
+
+  const pinTransfer = () => {
+    const request = {
+      amount,
+      recipient_id,
+      notes,
+      time,
+      type_id: typeId,
+      pin: enteredPin,
+    };
+    dispatch(transfer({ token, request }));
+  };
+
   useEffect(() => {
-    if (enteredPin.length > 0) {
-      setShowRemoveButton(true);
-    } else {
-      setShowRemoveButton(false);
+    if (successMsg) {
+      dispatch(resetMsg());
+      navigation.navigate('TransferSuccess');
     }
-    if (enteredPin.length === 6) {
-      setShowCompletedButton(true);
-    } else {
-      setShowCompletedButton(false);
-    }
-  }, [enteredPin]);
+  });
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header} />
@@ -42,78 +54,15 @@ const PinConfirmation = ({ navigation }) => {
           </Text>
           <Text
             style={[styles.textBlack, styles.fs16px, styleLocal.textCenter]}>
-            Enter your 6 digits PIN for confirmation to continue transferring money.
+            Enter your 6 digits PIN for confirmation to continue transferring
+            money.
           </Text>
         </View>
 
-        <View>
-          <ReactNativePinView
-            inputSize={32}
-            ref={pinView}
-            pinLength={6}
-            onValueChange={value => setEnteredPin(value)}
-            buttonTextStyle={styleLocal.textBlack}
-            buttonAreaStyle={{
-              marginTop: 24,
-            }}
-            inputAreaStyle={{
-              marginBottom: 24,
-            }}
-            inputViewEmptyStyle={{
-              backgroundColor: "transparent",
-              borderWidth: 1,
-              borderColor: PRIMARY_COLOR,
-            }}
-            inputViewFilledStyle={{
-              backgroundColor: PRIMARY_COLOR,
-            }}
-            buttonViewStyle={{
-              borderWidth: 1,
-              borderColor: PRIMARY_COLOR,
-            }}
-            buttonTextStyle={{
-              color: PRIMARY_COLOR,
-            }}
-            onButtonPress={key => {
-              if (key === 'custom_left') {
-                pinView.current.clear()
-              }
-              if (key === 'custom_right') {
-                alert('Entered Pin: ' + enteredPin)
-              }
-            }}
-            customLeftButton={
-              showRemoveButton ? (
-                <Icon name={'remove'} size={36} color={PRIMARY_COLOR} />
-              ) : undefined
-            }
-            customRightButton={
-              showCompletedButton ? (
-                <Text
-                  style={[
-                    styles.textBlack,
-                    styles.fwBold,
-                    styles.fs24px,
-                    styles.colorPrimary,
-                  ]}>
-                  OK
-                </Text>
-              ) : undefined
-            }
-          />
-        </View>
-        <View style={styles.buttonWrapper}>
-          <TouchableOpacity onPress={() => navigation.navigate('TransferFailed')}>
-            <Text style={styles.textBlack}>Failed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.marBot20}
-            onPress={() => navigation.navigate('TransferSuccess')}>
-            <View style={[styles.button, styles.text]}>
-              <Text style={styles.buttonText}>Transfer Now</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <Formik initialValues={{ enteredPin: enteredPin }} onSubmit={pinTransfer}>
+          {props => <FormPin {...props} setEnteredPin={setEnteredPin}
+            enteredPin={enteredPin} />}
+        </Formik>
       </ScrollView>
     </View>
   );
