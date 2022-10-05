@@ -58,7 +58,6 @@ const PinConfirmation = ({ navigation }) => {
             money.
           </Text>
         </View>
-
         <Formik initialValues={{ enteredPin: enteredPin }} onSubmit={pinTransfer}>
           {props => <FormPin {...props} setEnteredPin={setEnteredPin}
             enteredPin={enteredPin} />}

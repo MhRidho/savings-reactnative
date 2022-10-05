@@ -7,6 +7,7 @@ import { PRIMARY_COLOR } from '../styles/constant';
 import Home from './Home';
 import History from './History';
 import Profile from './Profile';
+import TopUp from './TopUp';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -46,12 +47,13 @@ const HomeTab = () => {
       />
       <BottomTab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name="plus" color={color} size={size} />
           ),
         }}
         name="Top Up"
-        component={Home}
+        component={TopUp}
       />
       <BottomTab.Screen
         options={{

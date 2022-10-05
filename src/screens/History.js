@@ -4,105 +4,18 @@ import Profile1 from '../assets/profile1.png';
 import Profile2 from '../assets/profile2.png';
 import Spotify from '../assets/spotify.png';
 import Netflix from '../assets/netflix.png';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  Image,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import { SECONDARY_COLOR } from '../styles/constant';
 import { Box, Button, Flex, Center, VStack, Icon } from 'native-base';
 import styles from '../styles/global';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSelector } from 'react-redux';
+import CardTransaction from '../components/cardTransaction';
 const BottomTab = createBottomTabNavigator();
 
-const data = [
-  {
-    id: 1,
-    img: Profile1,
-    name: 'John',
-    description: 'Transfer',
-    amount: '+Rp50.000',
-    phoneNumber: '081222333444',
-  },
-  {
-    id: 2,
-    img: Profile2,
-    name: 'Bobi Sammy',
-    description: 'Transfer',
-    amount: '+Rp1.150.000',
-    phoneNumber: '081222333445',
-  },
-  {
-    id: 3,
-    img: Spotify,
-    name: 'Spotify',
-    description: 'Subscription',
-    amount: '-Rp49.000',
-    phoneNumber: '081222333446',
-  },
-  {
-    id: 4,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333447',
-  },
-  {
-    id: 5,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333445',
-  },
-  {
-    id: 6,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333446',
-  },
-  {
-    id: 7,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333447',
-  },
-  {
-    id: 8,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333445',
-  },
-  {
-    id: 9,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333446',
-  },
-  {
-    id: 10,
-    img: Netflix,
-    name: 'Netflix',
-    description: 'Subscription',
-    amount: '-Rp149.000',
-    phoneNumber: '081222333447',
-  },
-];
-
 const History = ({ navigation }) => {
+  const history = useSelector(state => state.transaction.value);
   return (
     <View style={styles.root}>
       <View style={[styles.marBot20, styles.marTop20, styles.padHor10]}>
@@ -111,10 +24,13 @@ const History = ({ navigation }) => {
         </Text>
       </View>
       <FlatList
-        data={data}
+        data={history.results}
         contentContainerStyle={styles.container}
-        renderItem={ItemList}
-        keyExtractor={item => String(item.id)}
+        renderItem={({ item }) => (
+          <TouchableOpacity>
+            <CardTransaction item={item} />
+          </TouchableOpacity>
+        )}
       />
     </View>
   );
