@@ -32,9 +32,6 @@ const Home = ({ navigation }) => {
     dispatch(getHistory(token));
   }, []);
 
-  console.log('log homeeeeeeeeeeeeeeeeeeeeeeeeeeee', profile.balance);
-  console.log('log homeeeeeeeeeeeeeeeeeeeeeeeeeeee', profile.phonenumber);
-
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerHome}>
@@ -43,18 +40,39 @@ const Home = ({ navigation }) => {
             <Image style={styleLocal.imageStyle} source={Profile} />
           </View>
           <Flex direction="row" justifyContent="space-between">
-            <View style={styleLocal.balanceView}>
-              <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
-              <Text style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
-                Rp {profile.balance || 'No Balance'}
-              </Text>
-              <Text style={[styles.fs14px, styles.textWhite]}>
-                {profile.phonenumber || '081200000001'}
-              </Text>
-            </View>
-            <View styles={styleLocal.iconView}>
-              <Icon name="bell-o" size={28} style={[styles.textWhite]} />
-            </View>
+            {profile ? (
+              <>
+                <View style={styleLocal.balanceView}>
+                  <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
+                  <Text
+                    style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
+                    Rp {profile.balance || 'No Balance'}
+                  </Text>
+                  <Text style={[styles.fs14px, styles.textWhite]}>
+                    {profile.phonenumber || '081200000001'}
+                  </Text>
+                </View>
+                <View styles={styleLocal.iconView}>
+                  <Icon name="bell-o" size={28} style={[styles.textWhite]} />
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={styleLocal.balanceView}>
+                  <Text style={[styles.fs14px, styles.textWhite]}>Balance</Text>
+                  <Text
+                    style={[styles.fs24px, styles.fwBold, styles.textWhite]}>
+                    Rp 'No Balance'
+                  </Text>
+                  <Text style={[styles.fs14px, styles.textWhite]}>
+                    '081200000001'
+                  </Text>
+                </View>
+                <View styles={styleLocal.iconView}>
+                  <Icon name="bell-o" size={28} style={[styles.textWhite]} />
+                </View>
+              </>
+            )}
           </Flex>
         </View>
       </View>

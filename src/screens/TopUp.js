@@ -19,7 +19,6 @@ import { getProfileLogin } from '../redux/asyncActions/profile';
 import { getHistory, topup } from '../redux/asyncActions/transaction';
 import { useEffect } from 'react';
 import { ErrorMessage, Formik } from 'formik';
-import * as Yup from 'yup';
 import { resetMsg } from '../redux/reducers/transaction';
 
 const dataTopUp = [

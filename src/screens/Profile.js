@@ -10,7 +10,15 @@ import React from 'react';
 
 import styles from '../styles/global';
 import Prof80 from '../assets/prof80.png';
-import { Box, Button, Flex, FormControl, Input, Modal, Switch } from 'native-base';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Input,
+  Modal,
+  Switch,
+} from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 import { SECONDARY_COLOR } from '../styles/constant';
 import { logout } from '../redux/reducers/auth';
@@ -34,7 +42,7 @@ const Profile = ({ navigation }) => {
   const errorMsg = useSelector(state => state.profile.errorMsg);
 
   const onEdit = () => {
-    const request = { fullname, phonenumber }
+    const request = { fullname, phonenumber };
     dispatch(updateProfile({ token, request }));
   };
 
@@ -67,29 +75,65 @@ const Profile = ({ navigation }) => {
               <FormControl>
                 <FormControl.Label>Amount</FormControl.Label>
                 <Box alignItems="center" style={styles.marTop20}>
-                  <Input
-                    name="fullname"
-                    value={fullname}
-                    onChangeText={setFullname}
-                    textAlign={'center'}
-                    style={[styles.fs24px]}
-                    variant="unstyled"
-                    placeholder={profile.fullname || 'no name'}
-                    keyboardType="text"
-                  />
+                  {profile ? (
+                    <>
+                      <Input
+                        name="fullname"
+                        value={fullname}
+                        onChangeText={setFullname}
+                        textAlign={'center'}
+                        style={[styles.fs24px]}
+                        variant="unstyled"
+                        placeholder={profile.fullname || 'no name'}
+                        keyboardType="text"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Input
+                        name="fullname"
+                        value={fullname}
+                        onChangeText={setFullname}
+                        textAlign={'center'}
+                        style={[styles.fs24px]}
+                        variant="unstyled"
+                        placeholder="no name"
+                        keyboardType="text"
+                      />
+                    </>
+                  )}
                 </Box>
-                <Box alignItems="center">
-                  <Input
-                    name="phone"
-                    value={phonenumber}
-                    onChangeText={setPhonenumber}
-                    textAlign={'center'}
-                    style={[styles.fs22px]}
-                    variant="unstyled"
-                    placeholder={profile.phonenumber || 'no number'}
-                    keyboardType="text"
-                  />
-                </Box>
+                {profile ? (
+                  <>
+                    <Box alignItems="center">
+                      <Input
+                        name="phone"
+                        value={phonenumber}
+                        onChangeText={setPhonenumber}
+                        textAlign={'center'}
+                        style={[styles.fs22px]}
+                        variant="unstyled"
+                        placeholder={profile.phonenumber || 'no number'}
+                        keyboardType="text"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <Box alignItems="center">
+                      <Input
+                        name="phone"
+                        value={phonenumber}
+                        onChangeText={setPhonenumber}
+                        textAlign={'center'}
+                        style={[styles.fs22px]}
+                        variant="unstyled"
+                        placeholder="no number"
+                        keyboardType="text"
+                      />
+                    </Box>
+                  </>
+                )}
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
@@ -109,20 +153,44 @@ const Profile = ({ navigation }) => {
         </Modal>
 
         <View style={[styles.marTop20]}>
-          <Text
-            style={[
-              styles.textBlack,
-              styles.fwBold,
-              styles.fs24px,
-              styles.textCenter,
-            ]}>
-            {profile.fullname || 'no name'}
-          </Text>
+          {profile ? (
+            <Text
+              style={[
+                styles.textBlack,
+                styles.fwBold,
+                styles.fs24px,
+                styles.textCenter,
+              ]}>
+              {profile.fullname || 'no name'}
+            </Text>
+          ) : (
+            <Text
+              style={[
+                styles.textBlack,
+                styles.fwBold,
+                styles.fs24px,
+                styles.textCenter,
+              ]}>
+              'no name'
+            </Text>
+          )}
         </View>
         <View style={[styles.marTop10]}>
-          <Text style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
-            {profile.phonenumber || 'no number'}
-          </Text>
+          {profile ? (
+            <>
+              <Text
+                style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
+                {profile.phonenumber || 'no number'}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text
+                style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
+                'no number'
+              </Text>
+            </>
+          )}
         </View>
         <View style={[styles.padHor10, styles.marTop50, styles.marBot10]}>
           <TouchableOpacity

@@ -63,14 +63,25 @@ const SearchReceiver = ({ navigation }) => {
         </View>
         <View style={[styles.padHor10, styles.marTop30]}>
           <TouchableOpacity />
-          <FlatList
-            data={allprofile.results}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => NextData(item)}>
-                <CardTransfer item={item} />
-              </TouchableOpacity>
-            )}
-          />
+          {allprofile ? (
+            <FlatList
+              data={allprofile.results}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => NextData(item)}>
+                  <CardTransfer item={item} />
+                </TouchableOpacity>
+              )}
+            />
+          ) : (
+            <FlatList
+              data={allprofile.results}
+              renderItem={({ item }) => (
+                <TouchableOpacity>
+                  <CardTransfer />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
       </View>
     </View>
