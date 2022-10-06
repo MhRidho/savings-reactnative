@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "961737675488",
+    "project_id": "savingsnative",
+    "storage_bucket": "savingsnative.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961737675488:android:6c5c5b0e6f16835f143685",
+        "android_client_info": {
+          "package_name": "com.savingsnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961737675488-6n2dfc16nll3gp5vvi7p588soie2c64u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfU1a6Y5nbskbpUkaZSrXB1-E9Kg1BMQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961737675488-6n2dfc16nll3gp5vvi7p588soie2c64u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

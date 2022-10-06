@@ -20,6 +20,7 @@ import { getHistory, topup } from '../redux/asyncActions/transaction';
 import { useEffect } from 'react';
 import { ErrorMessage, Formik } from 'formik';
 import { resetMsg } from '../redux/reducers/transaction';
+import PushNotification from 'react-native-push-notification';
 
 const dataTopUp = [
   {
@@ -72,6 +73,11 @@ const TopUp = ({ navigation }) => {
   const topupSubmit = () => {
     const request = { amount, time, notes, type_id }
     dispatch(topup({ token, request }));
+    PushNotification.localNotification({
+      channelId: 'general',
+      title: 'Savings App',
+      message: 'Congratulations, Your Balance Added',
+    });
   };
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import * as Yup from 'yup';
 import { ErrorMessage, Formik } from 'formik';
 import { useEffect } from 'react';
 import ButtonSavings from '../components/ButtonSavings';
+import PushNotification from 'react-native-push-notification';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().required('Required'),
@@ -87,6 +88,12 @@ const Login = ({ navigation }) => {
     const password = value.password;
     const data = { email, password };
     dispatch(login(data));
+
+    PushNotification.localNotification({
+      channelId: 'general',
+      title: 'You are Login',
+      message: 'Welcome to Savings App Mobile',
+    });
   };
 
   useEffect(() => {

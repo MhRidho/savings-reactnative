@@ -41,6 +41,11 @@ const Profile = ({ navigation }) => {
   const successMsg = useSelector(state => state.profile.successMsg);
   const errorMsg = useSelector(state => state.profile.errorMsg);
 
+  const logoutProfile = () => {
+    dispatch(logout());
+    navigation.navigate('Login');
+  };
+
   const onEdit = () => {
     const request = { fullname, phonenumber };
     dispatch(updateProfile({ token, request }));

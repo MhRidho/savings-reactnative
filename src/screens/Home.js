@@ -84,7 +84,7 @@ const Home = ({ navigation }) => {
                 <Button
                   style={styleLocal.bgPrimary}
                   size="lg"
-                  action={() => navigation.navigate('SearchReceiver')}>
+                  onPress={() => navigation.navigate('SearchReceiver')}>
                   <Flex direction="row" justifyContent="center">
                     <Icon
                       name={'arrow-up'}
@@ -101,7 +101,7 @@ const Home = ({ navigation }) => {
                 <Button
                   style={styleLocal.bgPrimary}
                   size="lg"
-                  onPress={() => console.log('Top Up')}>
+                  onPress={() => navigation.navigate('TopUp')}>
                   <Flex direction="row" justifyContent="center">
                     <Icon
                       name={'arrow-up'}

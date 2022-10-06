@@ -18,6 +18,7 @@ import Confirmation from './Confirmation';
 import PinConfirmation from './PinConfirmation';
 import TransferSuccess from './TransferSuccess';
 import TransferFailed from './TransferFailed';
+import TopUp from './TopUp';
 import Profile from './Profile';
 import PersonalInformation from './PersonalInformation';
 import ChangePassword from './ChangePassword';
@@ -51,6 +52,7 @@ function Main() {
                 component={TransferSuccess}
               />
               <Stack.Screen name="TransferFailed" component={TransferFailed} />
+              <Stack.Screen name="TopUp" component={TopUp} />
               <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="ChangePassword" component={ChangePassword} />
               <Stack.Screen name="ChangePin" component={ChangePin} />
