@@ -49,3 +49,29 @@ export const updateProfile = createAsyncThunk(
     }
   },
 );
+
+export const uploadFoto = createAsyncThunk(
+  'profile/uploadFoto',
+  async ({ token, request }) => {
+    const result = {};
+    try {
+      const form = new FormData();
+      form.append('photo', {
+        uri: request.uri,
+        name: request.filename,
+        type: request.type,
+      });
+      const { data } = await http(token).patch('/auth/profile', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      result.data = data.results;
+      result.message = data.message;
+      return result;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+);

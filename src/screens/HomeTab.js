@@ -57,6 +57,7 @@ const HomeTab = () => {
       />
       <BottomTab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name="user" color={color} size={size} />
           ),

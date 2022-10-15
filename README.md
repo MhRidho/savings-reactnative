@@ -1,4 +1,5 @@
 # React Native | savings-reactnative
+![all_mobile](/ss/all-mobile-min.png)
 ![ss1](/ss/ss1.png)
 ![ss2](/ss/ss2.png)
 ![ss3](/ss/ss3.png)
@@ -25,7 +26,7 @@ React Native | Native Base
 3. Type npm install or yarn install
 4. Add .env file at root folder project
 
-REACT_APP_BACKEND_URL = http://localhost:3332
+REACT_APP_BACKEND_URL = https://fw9-backend-savings.vercel.app
 
 5. yarn start or npm start
 

@@ -26,33 +26,104 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { resetMsg } from '../redux/reducers/profile';
 import { useEffect } from 'react';
-import { updateProfile } from '../redux/asyncActions/profile';
+import { updateProfile, uploadFoto } from '../redux/asyncActions/profile';
 import { getProfileLogin } from '../redux/asyncActions/profile';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
+const CardProfile = ({ navigation, text, action }) => {
+  return (
+    <>
+      <View style={[styles.padHor10, styles.marBot10]}>
+        <TouchableOpacity onPress={action}>
+          <Box
+            rounded="lg"
+            width="100%"
+            bg={SECONDARY_COLOR}
+            p="4"
+            shadow={2}
+            _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
+            style={styles.marBot10}>
+            <Flex direction="row" justifyContent={'space-between'}>
+              <View>
+                <Text style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
+                  {text}
+                </Text>
+              </View>
+              {text === 'Notification' ? (
+                <View>
+                  <Switch size="sm" />
+                </View>
+              ) : (
+                <View>
+                  <Icon
+                    style={[styles.fs16px, styles.textWhite]}
+                    name="arrow-right"
+                  />
+                </View>
+              )}
+            </Flex>
+          </Box>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
 
 const Profile = ({ navigation }) => {
+  const [picture, setPicture] = useState('');
+  const [warning, setWarning] = useState(false);
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [fullname, setFullname] = useState('');
   const [phonenumber, setPhonenumber] = useState('');
+  const [imageCamera, setImageCamera] = useState(null);
 
   const token = useSelector(state => state.auth.token);
   const profile = useSelector(state => state.profile.data);
 
   const successMsg = useSelector(state => state.profile.successMsg);
-  const errorMsg = useSelector(state => state.profile.errorMsg);
 
   const logoutProfile = () => {
     dispatch(logout());
     navigation.navigate('Login');
   };
 
+  const upload = async type => {
+    try {
+      const data = type
+        ? await launchImageLibrary()
+        : await launchCamera({
+          maxHeight: 400,
+          maxWidth: 300,
+        });
+      const foto = data.assets[0];
+      if (foto.fileSize > 1000 * 1000) {
+        setWarning(true);
+      } else {
+        setWarning(false);
+        setPicture(foto);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onEdit = () => {
+    if (picture) {
+      const request2 = {
+        uri: picture.uri,
+        name: picture.filename,
+        type: picture.type,
+      };
+      dispatch(uploadFoto({ token, request2 }));
+    }
     const request = { fullname, phonenumber };
     dispatch(updateProfile({ token, request }));
   };
 
   useEffect(() => {
     if (successMsg) {
+      setWarning(false);
       dispatch(resetMsg());
       dispatch(getProfileLogin(token));
       setShowModal(false);
@@ -62,9 +133,37 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.wrapper}>
       <ScrollView style={styles.content}>
+        {successMsg && <Text>{successMsg}</Text>}
+        {warning && (
+          <Text style={styleLocal.warning}>Filesize must under 1 MB</Text>
+        )}
+
+        {picture ? (
+          <View style={styles.textHeader}>
+            <Image
+              style={[styleLocal.flex]}
+              source={{
+                uri: picture.uri,
+                width: 100,
+                height: 100,
+              }}
+            />
+          </View>
+        ) : (
+          <View style={styles.textHeader}>
+            <Image source={Prof80} style={[styleLocal.flex]} />
+          </View>
+        )}
+
         <View style={styles.textHeader}>
-          <Image source={Prof80} style={[styleLocal.flex]} />
+          <TouchableOpacity onPress={() => upload(true)}>
+            <Icon style={styleLocal.icon} name="folder" size={25} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => upload(false)}>
+            <Icon style={styleLocal.icon} name="camera" size={25} />
+          </TouchableOpacity>
         </View>
+
         <TouchableOpacity onPress={() => setShowModal(!showModal)}>
           <Text style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
             <Icon style={[styles.textBlack, styles.marRight10]} name="edit-2" />
@@ -180,7 +279,7 @@ const Profile = ({ navigation }) => {
             </Text>
           )}
         </View>
-        <View style={[styles.marTop10]}>
+        <View style={[styles.marTop10, styles.marBot10]}>
           {profile ? (
             <>
               <Text
@@ -197,134 +296,24 @@ const Profile = ({ navigation }) => {
             </>
           )}
         </View>
-        <View style={[styles.padHor10, styles.marTop50, styles.marBot10]}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('PersonalInformation')}>
-            <Box
-              rounded="lg"
-              width="100%"
-              bg={SECONDARY_COLOR}
-              p="4"
-              shadow={2}
-              _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-              style={styles.marBot10}>
-              <Flex direction="row" justifyContent={'space-between'}>
-                <View>
-                  <Text
-                    style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
-                    Personal Information
-                  </Text>
-                </View>
-                <View>
-                  <Icon
-                    style={[styles.fs16px, styles.textWhite]}
-                    name="arrow-right"
-                  />
-                </View>
-              </Flex>
-            </Box>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.padHor10, styles.marBot10]}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ChangePassword')}>
-            <Box
-              rounded="lg"
-              width="100%"
-              bg={SECONDARY_COLOR}
-              p="4"
-              shadow={2}
-              _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-              style={styles.marBot10}>
-              <Flex direction="row" justifyContent={'space-between'}>
-                <View>
-                  <Text
-                    style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
-                    Change Password
-                  </Text>
-                </View>
-                <View>
-                  <Icon
-                    style={[styles.fs16px, styles.textWhite]}
-                    name="arrow-right"
-                  />
-                </View>
-              </Flex>
-            </Box>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.padHor10, styles.marBot10]}>
-          <TouchableOpacity onPress={() => navigation.navigate('ChangePin')}>
-            <Box
-              rounded="lg"
-              width="100%"
-              bg={SECONDARY_COLOR}
-              p="4"
-              shadow={2}
-              _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-              style={styles.marBot10}>
-              <Flex direction="row" justifyContent={'space-between'}>
-                <View>
-                  <Text
-                    style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
-                    Change PIN
-                  </Text>
-                </View>
-                <View>
-                  <Icon
-                    style={[styles.fs16px, styles.textWhite]}
-                    name="arrow-right"
-                  />
-                </View>
-              </Flex>
-            </Box>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.padHor10, styles.marBot10]}>
-          <TouchableOpacity>
-            <Box
-              rounded="lg"
-              width="100%"
-              bg={SECONDARY_COLOR}
-              p="4"
-              shadow={2}
-              _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-              style={styles.marBot10}>
-              <Flex direction="row" justifyContent={'space-between'}>
-                <View>
-                  <Text
-                    style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
-                    Notification
-                  </Text>
-                </View>
-                <View>
-                  <Switch size="sm" />
-                </View>
-              </Flex>
-            </Box>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.padHor10]}>
-          <TouchableOpacity action={() => logoutProfile()}>
-            <Box
-              rounded="lg"
-              width="100%"
-              bg={SECONDARY_COLOR}
-              p="4"
-              shadow={2}
-              _text={{ fontSize: 'md', fontWeight: 'bold', color: 'white' }}
-              style={styles.marBot10}>
-              <Flex direction="row" justifyContent={'space-between'}>
-                <View>
-                  <Text
-                    style={[styles.fs16px, styles.fwBold, styles.textWhite]}>
-                    Logout
-                  </Text>
-                </View>
-              </Flex>
-            </Box>
-          </TouchableOpacity>
-        </View>
+
+        <CardProfile
+          text="Personal Information"
+          action={() => navigation.navigate('PersonalInformation')}
+        />
+        <CardProfile
+          text="Change Password"
+          action={() => navigation.navigate('ChangePassword')}
+        />
+        <CardProfile
+          text="Change PIN"
+          action={() => navigation.navigate('ChangePin')}
+        />
+        <CardProfile
+          text="Notification"
+          action={() => navigation.navigate('Notification')}
+        />
+        <CardProfile text="Logout" action={logoutProfile} />
       </ScrollView>
       {/* <View style={styles.footer} /> */}
     </View>
@@ -340,6 +329,12 @@ const styleLocal = StyleSheet.create({
   },
   bgBlack: {
     backgroundColor: 'black',
+  },
+  warning: {
+    backgroundColor: 'yellow',
+  },
+  icon: {
+    marginHorizontal: 20,
   },
 });
 
