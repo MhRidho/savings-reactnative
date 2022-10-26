@@ -29,6 +29,51 @@ import { useEffect } from 'react';
 import { updateProfile, uploadFoto } from '../redux/asyncActions/profile';
 import { getProfileLogin } from '../redux/asyncActions/profile';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Formik } from 'formik';
+
+const FormEdit = ({ handleChange, handleSubmit }) => {
+  const [showModal, setShowModal] = useState(false);
+  const profile = useSelector(state => state.profile.data);
+  return (
+    <>
+      <Modal.Body>
+        <FormControl>
+          <Box alignItems="center" style={styles.marTop20}>
+            <Input
+              onChangeText={handleChange('fullname')}
+              textAlign={'center'}
+              style={[styles.fs24px]}
+              variant="unstyled"
+              placeholder={profile ? profile.fullname : 'no name'}
+            />
+          </Box>
+          <Box alignItems="center">
+            <Input
+              onChangeText={handleChange('phonenumber')}
+              textAlign={'center'}
+              style={[styles.fs22px]}
+              variant="unstyled"
+              placeholder={profile ? profile.phonenumber : 'no number'}
+            />
+          </Box>
+        </FormControl>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button.Group space={2}>
+          <Button
+            variant="ghost"
+            colorScheme="blueGray"
+            onPress={() => {
+              setShowModal(!showModal);
+            }}>
+            Cancel
+          </Button>
+          <Button onPress={handleSubmit}>Edit</Button>
+        </Button.Group>
+      </Modal.Footer>
+    </>
+  );
+};
 
 const CardProfile = ({ navigation, text, action }) => {
   return (
@@ -76,7 +121,6 @@ const Profile = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [fullname, setFullname] = useState('');
   const [phonenumber, setPhonenumber] = useState('');
-  const [imageCamera, setImageCamera] = useState(null);
 
   const token = useSelector(state => state.auth.token);
   const profile = useSelector(state => state.profile.data);
@@ -108,17 +152,21 @@ const Profile = ({ navigation }) => {
     }
   };
 
-  const onEdit = () => {
+  const onEdit = val => {
     if (picture) {
-      const request2 = {
+      const request = {
         uri: picture.uri,
-        name: picture.filename,
+        name: picture.fileName,
         type: picture.type,
       };
-      dispatch(uploadFoto({ token, request2 }));
+      dispatch(uploadFoto({ token, request }));
+    } else {
+      const request = {
+        fullname: val.fullname,
+        phonenumber: val.phonenumber,
+      };
+      dispatch(updateProfile({ token, request }));
     }
-    const request = { fullname, phonenumber };
-    dispatch(updateProfile({ token, request }));
   };
 
   useEffect(() => {
@@ -128,7 +176,7 @@ const Profile = ({ navigation }) => {
       dispatch(getProfileLogin(token));
       setShowModal(false);
     }
-  }, [successMsg]);
+  }, [dispatch, successMsg, token]);
 
   return (
     <View style={styles.wrapper}>
@@ -151,11 +199,18 @@ const Profile = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.textHeader}>
-            <Image source={Prof80} style={[styleLocal.flex]} />
+            <Image
+              source={{
+                uri: profile?.picture ? profile.picture : Prof80,
+                width: 80,
+                height: 80,
+              }}
+              style={[styleLocal.flex]}
+            />
           </View>
         )}
 
-        <View style={styles.textHeader}>
+        <View style={[styleLocal.pickerCam, styles.textHeader]}>
           <TouchableOpacity onPress={() => upload(true)}>
             <Icon style={styleLocal.icon} name="folder" size={25} />
           </TouchableOpacity>
@@ -174,127 +229,35 @@ const Profile = ({ navigation }) => {
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <Modal.Content maxWidth="400px">
             <Modal.CloseButton />
-            <Modal.Header>Input Amount</Modal.Header>
-            <Modal.Body>
-              <FormControl>
-                <FormControl.Label>Amount</FormControl.Label>
-                <Box alignItems="center" style={styles.marTop20}>
-                  {profile ? (
-                    <>
-                      <Input
-                        name="fullname"
-                        value={fullname}
-                        onChangeText={setFullname}
-                        textAlign={'center'}
-                        style={[styles.fs24px]}
-                        variant="unstyled"
-                        placeholder={profile.fullname || 'no name'}
-                        keyboardType="text"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Input
-                        name="fullname"
-                        value={fullname}
-                        onChangeText={setFullname}
-                        textAlign={'center'}
-                        style={[styles.fs24px]}
-                        variant="unstyled"
-                        placeholder="no name"
-                        keyboardType="text"
-                      />
-                    </>
-                  )}
-                </Box>
-                {profile ? (
-                  <>
-                    <Box alignItems="center">
-                      <Input
-                        name="phone"
-                        value={phonenumber}
-                        onChangeText={setPhonenumber}
-                        textAlign={'center'}
-                        style={[styles.fs22px]}
-                        variant="unstyled"
-                        placeholder={profile.phonenumber || 'no number'}
-                        keyboardType="text"
-                      />
-                    </Box>
-                  </>
-                ) : (
-                  <>
-                    <Box alignItems="center">
-                      <Input
-                        name="phone"
-                        value={phonenumber}
-                        onChangeText={setPhonenumber}
-                        textAlign={'center'}
-                        style={[styles.fs22px]}
-                        variant="unstyled"
-                        placeholder="no number"
-                        keyboardType="text"
-                      />
-                    </Box>
-                  </>
-                )}
-              </FormControl>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => {
-                    setShowModal(!showModal);
-                  }}>
-                  Cancel
-                </Button>
-                <Button onPress={() => onEdit()}>Edit</Button>
-              </Button.Group>
-            </Modal.Footer>
+            <Modal.Header>Edit Profile</Modal.Header>
+            <Formik
+              initialValues={{
+                fullname: profile?.fullname ? profile.fullname : 'Your Name',
+                phonenumber: profile?.phonenumber
+                  ? profile.phonenumber
+                  : 'Your Number',
+              }}
+              onSubmit={onEdit}>
+              {props => <FormEdit {...props} />}
+            </Formik>
           </Modal.Content>
         </Modal>
 
         <View style={[styles.marTop20]}>
-          {profile ? (
-            <Text
-              style={[
-                styles.textBlack,
-                styles.fwBold,
-                styles.fs24px,
-                styles.textCenter,
-              ]}>
-              {profile.fullname || 'no name'}
-            </Text>
-          ) : (
-            <Text
-              style={[
-                styles.textBlack,
-                styles.fwBold,
-                styles.fs24px,
-                styles.textCenter,
-              ]}>
-              'no name'
-            </Text>
-          )}
+          <Text
+            style={[
+              styles.textBlack,
+              styles.fwBold,
+              styles.fs24px,
+              styles.textCenter,
+            ]}>
+            {profile ? profile.fullname : 'no name'}
+          </Text>
         </View>
         <View style={[styles.marTop10, styles.marBot10]}>
-          {profile ? (
-            <>
-              <Text
-                style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
-                {profile.phonenumber || 'no number'}
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text
-                style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
-                'no number'
-              </Text>
-            </>
-          )}
+          <Text style={[styles.textBlack, styles.textCenter, styles.fs16px]}>
+            {profile ? profile.phonenumber : 'no number'}
+          </Text>
         </View>
 
         <CardProfile
@@ -315,7 +278,6 @@ const Profile = ({ navigation }) => {
         />
         <CardProfile text="Logout" action={logoutProfile} />
       </ScrollView>
-      {/* <View style={styles.footer} /> */}
     </View>
   );
 };
@@ -335,6 +297,10 @@ const styleLocal = StyleSheet.create({
   },
   icon: {
     marginHorizontal: 20,
+  },
+  pickerCam: {
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });
 

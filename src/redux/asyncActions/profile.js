@@ -37,6 +37,10 @@ export const getAllProfiles = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   'profile/updateProfile',
   async ({ token, request }) => {
+    console.log(
+      'ini log actionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn update',
+      request,
+    );
     const result = {};
     try {
       const send = qs.stringify(request);
@@ -53,12 +57,16 @@ export const updateProfile = createAsyncThunk(
 export const uploadFoto = createAsyncThunk(
   'profile/uploadFoto',
   async ({ token, request }) => {
+    console.log(
+      'ini log actionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn',
+      request,
+    );
     const result = {};
     try {
       const form = new FormData();
-      form.append('photo', {
+      form.append('picture', {
         uri: request.uri,
-        name: request.filename,
+        name: request.name,
         type: request.type,
       });
       const { data } = await http(token).patch('/auth/profile', form, {
